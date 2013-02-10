@@ -152,7 +152,16 @@ passenger_ctl() {
   if [ -z "$config_rvm" ]; then
     argv="$PASSENGER_SYSTEM_BIN $command $options"
   else
-    argv="rvm_path=$RVM_PATH $RVM_SHELL $config_rvm -c '$PASSENGER_RVM_BIN $command $options'"
+###################################################################
+##### MODIFICACION DEL SCRIPT PARA QUE FUNCIONE CON BUNDLE ########
+########### se añade cd $config_cwd && bundle exec ################
+###################################################################
+    argv="rvm_path=$RVM_PATH $RVM_SHELL $config_rvm -c 'cd $config_cwd && bundle exec $PASSENGER_RVM_BIN $command $options'"
+echo "$UID"
+    if [ "$UID" -eq 0 ]; then
+    	argv="runuser -l $config_user -c \"$argv\""
+    fi
+echo "----> $argv"
   fi
 
   [ -n "$DEBUG" ] && echo $argv
@@ -230,7 +239,11 @@ setup() {
 }
 ##############################################################################
 
-[ "$UID" -ne 0 ] && echo "You should run this script as a root " && exit 1
+###################################################################
+##### MODIFICACION DEL SCRIPT PARA QUE FUNCIONE SIN ROOT   ########
+########### se comenta la linea, con root no va bien ##############
+###################################################################
+#[ "$UID" -ne 0 ] && echo "You should run this script as a root " && exit 1
 
 case "$1" in
   start|stop|status|restart|reload|upgrade)
