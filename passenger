@@ -157,11 +157,9 @@ passenger_ctl() {
 ########### se añade cd $config_cwd && bundle exec ################
 ###################################################################
     argv="rvm_path=$RVM_PATH $RVM_SHELL $config_rvm -c 'cd $config_cwd && bundle exec $PASSENGER_RVM_BIN $command $options'"
-echo "$UID"
     if [ "$UID" -eq 0 ]; then
     	argv="runuser -l $config_user -c \"$argv\""
     fi
-echo "----> $argv"
   fi
 
   [ -n "$DEBUG" ] && echo $argv
